@@ -75,11 +75,8 @@ class FeedforwardSparseAutoEncoder():
         X=tf.placeholder("float",shape=[None,training_data.shape[1]])
         var_list=[self.W1,self.W2]
         loss_=self.loss(X)
-        opt=self.optimizer.minimize(loss_,var_list=var_list)
-        for iter in range(n_iter):
-            cost,_=self.sess.run((loss_,opt),feed_dict={X:training_data})
-            if iter%10==0:
-                print("Iter:"+str(iter)+"/"+str(n_iter)+"  loss:  {}".format(cost))
+        train_step=tf.contrib.opt.ScipyOptimizerInterface(loss_, var_list=var_list, method='L-BFGS-B',   options={'maxiter': n_iter})
+        train_step.minimize(self.sess, feed_dict={X: inputs})
 
 
 def visualizeW1(images, vis_patch_side, hid_patch_side, iter, file_name="trained_"):
@@ -114,8 +111,7 @@ def main():
     lens=1000
     learning_rate=0.1
 
-    optimizer= tf.train.GradientDescentOptimizer(learning_rate)
-    sae=   FeedforwardSparseAutoEncoder(n_inputs,n_hidden,optimizer=optimizer)
+    sae=   FeedforwardSparseAutoEncoder(n_inputs,n_hidden)
     n_iters=4000
     sae.training(mnist.train.images[start:start+lens],n_iter=n_iters)
 
