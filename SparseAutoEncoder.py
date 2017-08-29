@@ -76,7 +76,7 @@ class FeedforwardSparseAutoEncoder():
         var_list=[self.W1,self.W2]
         loss_=self.loss(X)
         train_step=tf.contrib.opt.ScipyOptimizerInterface(loss_, var_list=var_list, method='L-BFGS-B',   options={'maxiter': n_iter})
-        train_step.minimize(self.sess, feed_dict={X: inputs})
+        train_step.minimize(self.sess, feed_dict={X: training_data})
 
 
 def visualizeW1(images, vis_patch_side, hid_patch_side, iter, file_name="trained_"):
